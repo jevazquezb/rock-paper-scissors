@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rock, Paper or Scissors</title>
+</head>
+<body>
+    
+    <script>
+        function computerPlay() {
+            let art = ['Rock', 'Paper', 'Scissors']
+            return art[Math.floor(Math.random()*art.length)];
+        }
+
+        function playRound(playerSelection, computerSelection) {
+            playerSelection = playerSelection.toLowerCase();
+            computerSelection = computerSelection.toLowerCase();
+            let message;
+            let userPoints;
+            let computerPoints;
+
+            switch(true) {
+                case playerSelection == 'rock' && computerSelection == 'paper':
+                    return {message: "You lose!, Rock is covered by Paper.",
+                            userPoints: 0,
+                            computerPoints: 1
+                    }
+                    break;
+
+                case playerSelection == 'rock' && computerSelection == 'scissors':
+                    return {message: "You win!, Rock crushes Scissors.", 
+                            userPoints: 1,
+                            computerPoints: 0
+                    }
+                    break;
+
+                case playerSelection == 'paper' && computerSelection == 'scissors':
+                    return {message: "You lose!, Paper is cut by Scissors.", 
+                            userPoints: 0,
+                            computerPoints: 1
+                    }
+                    break;
+
+                case playerSelection == 'paper' && computerSelection == 'rock':
+                    return {message: "You win!, Paper covers Rock.", 
+                            userPoints: 1,
+                            computerPoints: 0
+                    }
+                    break;
+
+                case playerSelection == 'scissors' && computerSelection == 'rock':
+                    return {message: "You lose!, Scissors are crushed by Rock.", 
+                            userPoints: 0,
+                            computerPoints: 1
+                    }
+                    break;
+
+                case playerSelection == 'scissors' && computerSelection == 'paper':
+                    return {message: "You win!, Scissors cuts paper.", 
+                            userPoints: 1,
+                            computerPoints: 0
+                    }
+                    break;
+
+                case playerSelection == computerSelection:
+                    return {message: `It's a tie, you both chose ${playerSelection.charAt(0).toUpperCase()+playerSelection.slice(1)}.`, 
+                            userPoints: 0,
+                            computerPoints: 0
+                    }
+                    break;
+   
+                default:
+                    "You haven't chosen; play Rock, Paper, Scissors!!";
+            }
+        }
+
+        function game() {
+            let n;
+            rounds: while(true) {
+                n = prompt("How many rounds do you want to play?",);
+              
+                if (isNaN (n)) {
+                    alert("You didn't type a number, please enter the amount of rounds you want to play."); 
+                    continue rounds;
+                } else if (n == null) {
+                    return;
+                } else if (n.trim() == "") {
+                    alert("You haven't chosen the number of rounds.");
+                    continue rounds;
+                } else if (n <= 0) {
+                    alert("You type zero or a negative number, please enter a positive one.");
+                    continue rounds;
+                } else if (!Number.isInteger(+n)) {
+                    alert("Please type an integer number.");
+                    continue rounds;
+                }
+                break;
+            }
+
+            let userScore = 0;
+            let computerScore = 0;
+
+            for (let i = 1; i <= n; i++) {
+                let playerSelection;
+
+                selection: while(true) {
+                    playerSelection = prompt(`Choose Rock, Paper or Scissors for round ${i}.`,);
+
+                    if (isNaN(playerSelection)) {
+                        if (playerSelection.toLowerCase() == "rock" || playerSelection.toLowerCase() == "paper" || playerSelection.toLowerCase() == "scissors") {
+                            break;
+                        }
+
+                        alert("You chose an invalid option, please enter Rock, Paper or Scissors.");
+                        continue selection;
+
+                    } else if (playerSelection == null) {
+                        return;  
+                    }
+
+                    alert("You haven't chosen; type Rock, Paper or Scissors.");
+                    continue selection;                       
+                }
+
+                let computerSelection = computerPlay();
+                let {message, userPoints, computerPoints} = playRound(playerSelection, computerSelection);
+                userScore += userPoints;
+                computerScore += computerPoints;
+                console.log(`Round ${i}: ${message} You have ${userScore} point(s), and computer has ${computerScore} point(s).`);      
+            }
+
+            if (userScore > computerScore) {
+                console.log(`Final result: Congrats! You win the game ${userScore} - ${computerScore}!`);
+            } else if (userScore < computerScore) {
+                console.log(`Final result: Nice try, this time you lose ${userScore} - ${computerScore}.`);
+            } else {
+                console.log(`Final result: It's a total draw ${userScore} - ${computerScore}.`);
+            }
+        }
+    </script>
+</body>
+</html>
