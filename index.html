@@ -5,8 +5,17 @@
     <title>Rock, Paper or Scissors</title>
 </head>
 <body>
-    
+
+    <button>Play Rock, Paper or Scissors.</button>
+    <div></div>
+        
     <script>
+
+        const btn = document.querySelector('button');
+        btn.onclick = game;
+
+        const section = document.querySelector('div');
+        
         function computerPlay() {
             let art = ['Rock', 'Paper', 'Scissors']
             return art[Math.floor(Math.random()*art.length)];
@@ -21,42 +30,42 @@
 
             switch(true) {
                 case playerSelection == 'rock' && computerSelection == 'paper':
-                    return {message: "You lose!, Rock is covered by Paper.",
+                    return {message: "You lose! Rock is covered by Paper.",
                             userPoints: 0,
                             computerPoints: 1
                     }
                     break;
 
                 case playerSelection == 'rock' && computerSelection == 'scissors':
-                    return {message: "You win!, Rock crushes Scissors.", 
+                    return {message: "You win! Rock crushes Scissors.", 
                             userPoints: 1,
                             computerPoints: 0
                     }
                     break;
 
                 case playerSelection == 'paper' && computerSelection == 'scissors':
-                    return {message: "You lose!, Paper is cut by Scissors.", 
+                    return {message: "You lose! Paper is cut by Scissors.", 
                             userPoints: 0,
                             computerPoints: 1
                     }
                     break;
 
                 case playerSelection == 'paper' && computerSelection == 'rock':
-                    return {message: "You win!, Paper covers Rock.", 
+                    return {message: "You win! Paper covers Rock.", 
                             userPoints: 1,
                             computerPoints: 0
                     }
                     break;
 
                 case playerSelection == 'scissors' && computerSelection == 'rock':
-                    return {message: "You lose!, Scissors are crushed by Rock.", 
+                    return {message: "You lose! Scissors are crushed by Rock.", 
                             userPoints: 0,
                             computerPoints: 1
                     }
                     break;
 
                 case playerSelection == 'scissors' && computerSelection == 'paper':
-                    return {message: "You win!, Scissors cuts paper.", 
+                    return {message: "You win! Scissors cuts paper.", 
                             userPoints: 1,
                             computerPoints: 0
                     }
@@ -74,16 +83,19 @@
             }
         }
 
-        function game() {
+        function game() {            
+            section.innerHTML = "";
             let n;
+            let cancel = document.createElement('p');
+            cancel.textContent = "Canceled game."           
             rounds: while(true) {
                 n = prompt("How many rounds do you want to play?",);
               
                 if (isNaN (n)) {
                     alert("You didn't type a number, please enter the amount of rounds you want to play."); 
                     continue rounds;
-                } else if (n == null) {
-                    return;
+                } else if (n == null) {                                     
+                    return section.appendChild(cancel);
                 } else if (n.trim() == "") {
                     alert("You haven't chosen the number of rounds.");
                     continue rounds;
@@ -115,7 +127,7 @@
                         continue selection;
 
                     } else if (playerSelection == null) {
-                        return;  
+                        return section.appendChild(cancel);;  
                     }
 
                     alert("You haven't chosen; type Rock, Paper or Scissors.");
@@ -126,16 +138,22 @@
                 let {message, userPoints, computerPoints} = playRound(playerSelection, computerSelection);
                 userScore += userPoints;
                 computerScore += computerPoints;
-                console.log(`Round ${i}: ${message} You have ${userScore} point(s), and computer has ${computerScore} point(s).`);      
+                let para = document.createElement('p');
+                para.textContent = `Round ${i}: ${message} You have ${userScore} point(s), and computer has ${computerScore} point(s).`;
+                section.appendChild(para);
             }
 
+            let para1 = document.createElement('p');
+
             if (userScore > computerScore) {
-                console.log(`Final result: Congrats! You win the game ${userScore} - ${computerScore}!`);
+                para1.textContent = `Final result: Congrats! You win the game ${userScore} - ${computerScore}!`;
             } else if (userScore < computerScore) {
-                console.log(`Final result: Nice try, this time you lose ${userScore} - ${computerScore}.`);
+                para1.textContent = `Final result: Nice try, this time you lose ${userScore} - ${computerScore}.`;
             } else {
-                console.log(`Final result: It's a total draw ${userScore} - ${computerScore}.`);
+                para1.textContent = `Final result: It's a total draw ${userScore} - ${computerScore}.`;
             }
+
+            section.appendChild(para1);
         }
     </script>
 </body>
