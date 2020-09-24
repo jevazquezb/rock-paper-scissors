@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rock, Paper or Scissors</title>
+    <link rel="stylesheet" href="styles/reset.css" type="text/css" media="all">
+    <link rel="stylesheet" href="styles/format.css" type="text/css" media="all">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1 class="title">Play Rock, Paper, Scissors.</h1>
+
+    <div class="header">
+        <div class="score left">
+            <h2 class="separation">User</h2>
+            <h2 class="user">0</h2>
+        </div>
+
+        <div class="score center">
+            <h2 class="separation">Tie</h2>
+            <h2 class="tie">0</h2>
+        </div>
+
+        <div class="score right">
+            <h2 class="separation">Computer</h2>
+            <h2 class="computer">0</h2>
+        </div>        
+    </div>
+
+    <div class="game">
+        <img src="images/rock.svg" alt="Playing graphics" class="img">
+        <p class="para">V</p>
+        <img src="images/rock.svg" alt="Playing graphics" class="img1">
+    </div>
+
+    <div class="selection">
+        <div class="size">
+            <button class="rock">Rock</button>
+        </div>
+
+        <div class="size">
+            <button class="paper">Paper</button>
+        </div>
+
+        <div class="size">
+            <button class="scissors">Scissors</button>
+        </div>                
+    </div>
+
+    <div class="msg">
+        <br>
+        <p class="round-msg"></p>        
+        <br>  
+    </div>
+        
+    <script>
+
+        const buttons = document.querySelectorAll("div.size button");
+        
+        let userScore = 0;
+        let computerScore = 0;
+        let tieScore = 0;
+
+        buttons.forEach(pressButton);
+
+        function pressButton(but) {
+            but.addEventListener("click", shakeAndDraw)
+        }
+
+        function shakeAndDraw(e) {
+            let userImg = document.querySelector(".img");
+            let computerImg = document.querySelector(".img1");
+            userImg.setAttribute("src", "images/rock.svg");
+            computerImg.setAttribute("src", "images/rock.svg");
+            userImg.classList.add("shake");
+            computerImg.classList.add("shake");
+            
+            let playerSelection = e.target.className;                
+            let computerSelection = computerPlay();            
+
+            userImg.addEventListener("animationend", function transitionUserImg(e) {
+                e.target.classList.remove("shake");
+                if (playerSelection == "paper") {
+                    userImg.setAttribute("src", "images/paper.svg");
+                } else if (playerSelection == "scissors") {
+                    userImg.setAttribute("src", "images/scissors.svg");
+                }                                
+                this.removeEventListener("animationend", transitionUserImg); //this = userImg
+            });
+
+            computerImg.addEventListener("animationend", function transitionComputerImg(e) {
+                e.target.classList.remove("shake");
+                if (computerSelection == "paper") {
+                    computerImg.setAttribute("src", "images/paper.svg");
+                } else if (computerSelection == "scissors") {
+                    computerImg.setAttribute("src", "images/scissors.svg");
+                }                                             
+                this.removeEventListener("animationend", transitionComputerImg); //this = computerImg                
+            });
+
+            setTimeout(game, 1700, playerSelection, computerSelection);                                 
+        }
+
+        function game(playerSelection, computerSelection) {
+            let {message, userPoints, computerPoints} = playRound(playerSelection, computerSelection);
+            userScore += userPoints;
+            computerScore += computerPoints;
+            if (userPoints == computerPoints) tieScore += 1;
+            
+            let userSpace = document.querySelector(".user");
+            userSpace.textContent = userScore;                
+                
+            let computerSpace = document.querySelector(".computer");
+            computerSpace.textContent = computerScore;                
+
+            let tieSpace = document.querySelector(".tie");
+            tieSpace.textContent = tieScore;
+                
+            let messageSpace = document.querySelector(".round-msg");
+            messageSpace.textContent = message;                
+                
+            let finalResult = document.createElement('p');
+            let messageSection = document.querySelector(".msg")            
+            let lineBreak = document.createElement("br");
+            let playAgainButton = document.createElement("button");
+            playAgainButton.textContent = "Play Again!";
+            playAgainButton.classList.add("play")
+
+            if (userScore == 5) {
+                finalResult.textContent = "Congrats! You won the game.";                
+            } else if (computerScore == 5) {
+                finalResult.textContent = "Nice try, this time you lose.";
+            }
+
+            if (userScore == 5 || computerScore == 5) {
+                buttons.forEach((dis) => {
+                    dis.disabled = true;
+                });
+                messageSection.append(finalResult,lineBreak,playAgainButton);
+
+                playAgainButton.addEventListener("click", () => {
+                    document.location.reload(true);
+                });
+            }
+        }
+        
+        function computerPlay() {
+            let art = ['rock', 'paper', 'scissors']
+            return art[Math.floor(Math.random()*art.length)];
+        }
+
+        function playRound(playerSelection, computerSelection) {            
+            let message;
+            let userPoints;
+            let computerPoints;
+
+            switch(true) {
+                case playerSelection == 'rock' && computerSelection == 'paper':
+                    return {message: "You lose! Rock is covered by Paper.",
+                            userPoints: 0,
+                            computerPoints: 1
+                    }
+                    break;
+
+                case playerSelection == 'rock' && computerSelection == 'scissors':
+                    return {message: "You win! Rock crushes Scissors.", 
+                            userPoints: 1,
+                            computerPoints: 0
+                    }
+                    break;
+
+                case playerSelection == 'paper' && computerSelection == 'scissors':
+                    return {message: "You lose! Paper is cut by Scissors.", 
+                            userPoints: 0,
+                            computerPoints: 1
+                    }
+                    break;
+
+                case playerSelection == 'paper' && computerSelection == 'rock':
+                    return {message: "You win! Paper covers Rock.", 
+                            userPoints: 1,
+                            computerPoints: 0
+                    }
+                    break;
+
+                case playerSelection == 'scissors' && computerSelection == 'rock':
+                    return {message: "You lose! Scissors are crushed by Rock.", 
+                            userPoints: 0,
+                            computerPoints: 1
+                    }
+                    break;
+
+                case playerSelection == 'scissors' && computerSelection == 'paper':
+                    return {message: "You win! Scissors cuts Paper.", 
+                            userPoints: 1,
+                            computerPoints: 0
+                    }
+                    break;
+
+                case playerSelection == computerSelection:
+                    return {message: `It's a tie, you both chose ${playerSelection.charAt(0).toUpperCase()+playerSelection.slice(1)}.`, 
+                            userPoints: 0,
+                            computerPoints: 0
+                    }
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
